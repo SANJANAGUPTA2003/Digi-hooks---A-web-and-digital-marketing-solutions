@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-bg: #0b1023;
+  --color-purple: #34208e;
+  --color-orange: #f57c00;
+  --color-blue: #6cb6e8;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-family-display: var(--font-display);
+  --font-family-body: var(--font-body);
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: #fff;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgb(245 124 0 / 35%);
+  color: #fff;
+}
+
+.mesh-bg {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgb(52 32 142 / 45%), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgb(245 124 0 / 12%), transparent),
+    radial-gradient(ellipse 50% 30% at 0% 50%, rgb(108 182 232 / 10%), transparent);
+}
+
+.grid-overlay {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 3%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 3%) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 20%, transparent 75%);
+}
+
+.glass {
+  background: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 8%) 0%,
+    rgb(255 255 255 / 2%) 100%
+  );
+  border: 1px solid rgb(255 255 255 / 10%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-strong {
+  background: linear-gradient(
+    145deg,
+    rgb(52 32 142 / 25%) 0%,
+    rgb(255 255 255 / 4%) 50%,
+    rgb(245 124 0 / 8%) 100%
+  );
+  border: 1px solid rgb(255 255 255 / 12%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #fff 0%, #6cb6e8 50%, #f57c00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, var(--color-orange) 0%, #ff9a3d 50%, var(--color-purple) 100%);
+  background-size: 200% 200%;
+  transition: background-position 0.4s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-gradient:hover {
+  background-position: 100% 0;
+  box-shadow: 0 8px 32px rgb(245 124 0 / 35%);
+}
+
+.perspective-1200 {
+  perspective: 1200px;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 5s ease-in-out 1.5s infinite;
+}
