@@ -1,16 +1,18 @@
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
 import {
   Code2,
   LineChart,
   MapPin,
   Share2,
   Shield,
+  Target,
   type LucideIcon,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { SERVICES } from '../lib/constants'
-import { fadeUpScale, staggerContainer, viewportOnce } from '../lib/motion'
 import { SectionHeader } from './ui/SectionHeader'
+import { DottedSectionBg } from './DottedSectionBg'
 
 const serviceIcons: Record<string, LucideIcon> = {
   Code2,
@@ -18,6 +20,7 @@ const serviceIcons: Record<string, LucideIcon> = {
   MapPin,
   Share2,
   Shield,
+  Target,
 }
 
 interface ServicesProps {
@@ -25,83 +28,76 @@ interface ServicesProps {
 }
 
 export function Services({ showLearnMore = false }: ServicesProps) {
-  return (
-    <section className="relative py-20 sm:py-28">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+  const gridRef = useRef<HTMLDivElement>(null)
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  useEffect(() => {
+    const cards = gridRef.current?.querySelectorAll('.service-card')
+    if (!cards?.length) return
+
+    gsap.fromTo(
+      cards,
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.08,
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: gridRef.current,
+          start: 'top 82%',
+          toggleActions: 'play none none none',
+        },
+      },
+    )
+  }, [])
+
+  return (
+    <section className="relative overflow-hidden py-24 sm:py-32 bg-surface">
+      <DottedSectionBg />
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Services"
           title="Everything you need to win online"
           description="Full stack digital growth engineered for leads, rankings, and long term ROI."
         />
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          variants={staggerContainer}
-          className="grid gap-5 sm:grid-cols-2 lg:gap-6"
-        >
+        <div ref={gridRef} className="grid gap-5 sm:grid-cols-2 lg:gap-6">
           {SERVICES.map((service, index) => {
             const Icon = serviceIcons[service.icon] ?? Code2
             const isLarge = index === 0 || index === 2
 
             return (
-              <motion.article
+              <article
                 key={service.title}
-                variants={fadeUpScale}
-                whileHover={{
-                  y: -10,
-                  transition: { type: 'spring', stiffness: 300, damping: 20 },
-                }}
-                className={`group relative overflow-hidden rounded-3xl border border-white/10 ${
+                className={`service-card opacity-0 group surface-card p-6 sm:p-8 transition-opacity duration-300 hover:opacity-90 ${
                   isLarge ? 'sm:col-span-2' : ''
                 }`}
               >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${service.accent} opacity-60 transition-opacity group-hover:opacity-80`}
-                />
-                <div className="glass relative flex h-full min-h-[220px] flex-col justify-between p-6 sm:min-h-[260px] sm:p-8">
+                <div className="flex h-full min-h-[180px] flex-col justify-between">
                   <div>
-                    <motion.div
-                      whileHover={{ rotate: 10, scale: 1.1 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                      className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-orange transition group-hover:bg-orange/20"
-                    >
-                      <Icon size={28} />
-                    </motion.div>
-                    <h3 className="font-display text-xl font-bold text-white sm:text-2xl">
-                      {service.title}
-                    </h3>
-                    <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/65 sm:text-base">
-                      {service.desc}
-                    </p>
+                    <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-surface text-ink transition-colors duration-300 group-hover:bg-canvas">
+                      <Icon size={22} />
+                    </div>
+                    <h3 className="font-medium text-xl text-ink sm:text-2xl">{service.title}</h3>
+                    <p className="story-body mt-3 max-w-lg text-sm sm:text-base">{service.desc}</p>
                   </div>
 
                   {showLearnMore && (
                     <Link
                       to="/contact"
-                      className="mt-6 flex items-center gap-2 text-sm font-medium text-blue transition group-hover:text-orange"
+                      className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-ink hover:text-secondary transition-colors"
+                      data-cursor="hover"
                     >
-                      <span>Learn more</span>
-                      <motion.span
-                        className="inline-block"
-                        initial={{ x: 0 }}
-                        whileHover={{ x: 6 }}
-                        transition={{ type: 'spring', stiffness: 400 }}
-                      >
-                        →
-                      </motion.span>
+                      Learn more
+                      <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
                     </Link>
                   )}
-
-                  <div className="pointer-events-none absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-orange/10 blur-2xl transition group-hover:bg-orange/20" />
                 </div>
-              </motion.article>
+              </article>
             )
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

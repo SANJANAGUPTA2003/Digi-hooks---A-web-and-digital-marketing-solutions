@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import type { ReactNode } from 'react'
 
@@ -12,16 +11,17 @@ interface ButtonProps {
   variant?: Variant
   className?: string
   type?: 'button' | 'submit'
+  'data-cursor'?: string
 }
 
 const variants: Record<Variant, string> = {
   primary:
-    'btn-gradient text-white font-semibold shadow-lg shadow-orange/20 border-0',
+    'bg-ink text-white border border-ink hover:bg-hover hover:text-white hover:border-hover hover:shadow-[0_8px_24px_rgb(27_27_27_/_18%)]',
   secondary:
-    'glass text-white font-medium hover:bg-white/10 border border-white/15',
-  ghost: 'text-white/80 hover:text-white hover:bg-white/5 font-medium',
+    'bg-transparent text-ink border border-line hover:bg-ink hover:text-white hover:border-ink',
+  ghost: 'text-secondary hover:text-ink border border-transparent',
   whatsapp:
-    'bg-[#25D366] text-white font-semibold hover:bg-[#20bd5a] shadow-lg shadow-[#25D366]/25',
+    'bg-ink text-white border border-ink hover:bg-hover hover:text-white hover:border-hover hover:shadow-[0_8px_24px_rgb(27_27_27_/_18%)]',
 }
 
 export function Button({
@@ -32,41 +32,39 @@ export function Button({
   variant = 'primary',
   className = '',
   type = 'button',
+  ...rest
 }: ButtonProps) {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm transition-colors sm:px-6 sm:py-3.5 sm:text-base'
+    'relative z-10 inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-6 py-3.5 text-base font-semibold tracking-wide transition-all duration-[250ms] ease-out hover:scale-[1.03] active:scale-[0.98] sm:min-h-0 sm:py-3 sm:text-sm'
   const classes = `${base} ${variants[variant]} ${className}`
-
-  const motionProps = {
-    whileHover: { scale: 1.02 },
-    whileTap: { scale: 0.98 },
-  }
 
   if (to) {
     return (
-      <Link to={to} className={classes}>
+      <Link to={to} className={classes} onClick={onClick} data-cursor="hover" {...rest}>
         {children}
       </Link>
     )
   }
 
   if (href) {
+    const isExternal = href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:')
     return (
-      <motion.a
+      <a
         href={href}
-        target={href.startsWith('http') ? '_blank' : undefined}
-        rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
         className={classes}
-        {...motionProps}
+        data-cursor="hover"
+        {...rest}
       >
         {children}
-      </motion.a>
+      </a>
     )
   }
 
   return (
-    <motion.button type={type} onClick={onClick} className={classes} {...motionProps}>
+    <button type={type} onClick={onClick} className={classes} data-cursor="hover" {...rest}>
       {children}
-    </motion.button>
+    </button>
   )
 }

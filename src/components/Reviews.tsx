@@ -1,69 +1,74 @@
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 import { Star } from 'lucide-react'
 import { REVIEWS } from '../lib/constants'
-import { fadeUpScale, staggerContainer, viewportOnce } from '../lib/motion'
+import { revealOnScroll } from '../lib/scroll'
 import { SectionHeader } from './ui/SectionHeader'
+import { DottedSectionBg } from './DottedSectionBg'
 
-export function Reviews() {
+interface ReviewsProps {
+  expanded?: boolean
+}
+
+export function Reviews({ expanded = false }: ReviewsProps) {
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const grid = gridRef.current
+    const cards = grid?.querySelectorAll('.review-card')
+    if (!grid || !cards?.length) return
+
+    const tween = revealOnScroll(
+      cards,
+      { opacity: 0, y: 28, scale: 0.98 },
+      { opacity: 1, y: 0, scale: 1, stagger: 0.1, duration: 0.7, ease: 'power2.out' },
+      { trigger: grid, start: 'top 88%', toggleActions: 'play none none none' },
+    )
+
+    return () => {
+      tween.scrollTrigger?.kill()
+      tween.kill()
+    }
+  }, [])
+
   return (
-    <section className="relative py-20 sm:py-28">
-      <motion.div
-        aria-hidden
-        className="absolute left-0 bottom-0 h-72 w-72 rounded-full bg-orange/10 blur-[100px]"
-        animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.7, 0.4] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-      />
+    <section className={`relative overflow-hidden bg-canvas ${expanded ? 'pb-24 sm:pb-32' : 'py-24 sm:py-32'}`}>
+      <DottedSectionBg />
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {!expanded && (
+          <SectionHeader
+            eyebrow="Client reviews"
+            title="What our clients say"
+            description="Real feedback from businesses we've helped grow online."
+            align="center"
+          />
+        )}
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          eyebrow="Client reviews"
-          title="What our clients say"
-          description="Real feedback from businesses we've helped grow online."
-          align="center"
-        />
-
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          variants={staggerContainer}
-          className="grid gap-6 md:grid-cols-3"
+        <div
+          ref={gridRef}
+          className={`grid gap-6 ${expanded ? 'md:grid-cols-2 lg:grid-cols-3' : 'md:grid-cols-3'}`}
         >
           {REVIEWS.map((review) => (
-            <motion.blockquote
+            <blockquote
               key={review.name}
-              variants={fadeUpScale}
-              whileHover={{
-                y: -6,
-                transition: { type: 'spring', stiffness: 300, damping: 20 },
-              }}
-              className="glass flex flex-col rounded-3xl p-6 sm:p-8"
+              className="review-card surface-card flex flex-col p-6 sm:p-8 transition-opacity duration-300 hover:opacity-90"
             >
               <div className="mb-4 flex gap-1">
                 {Array.from({ length: review.rating }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, type: 'spring', stiffness: 200 }}
-                  >
-                    <Star size={16} className="fill-orange text-orange" />
-                  </motion.div>
+                  <Star key={i} size={15} className="fill-ink/20 text-ink/20" />
                 ))}
               </div>
-              <p className="flex-1 text-sm leading-relaxed text-white/70 sm:text-base">
+              <p className="flex-1 text-sm leading-relaxed story-body sm:text-base">
                 &ldquo;{review.text}&rdquo;
               </p>
-              <footer className="mt-6 border-t border-white/10 pt-4">
-                <p className="font-display font-semibold text-white">{review.name}</p>
-                <p className="text-sm text-white/50">
+              <footer className="mt-6 border-t border-line pt-4">
+                <p className="font-medium text-ink">{review.name}</p>
+                <p className="text-sm text-secondary">
                   {review.role}, {review.business}
                 </p>
               </footer>
-            </motion.blockquote>
+            </blockquote>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

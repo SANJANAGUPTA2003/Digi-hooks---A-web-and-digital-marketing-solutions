@@ -1,14 +1,9 @@
-import { motion } from 'framer-motion'
-import {
-  Handshake,
-  HeartHandshake,
-  Target,
-  Zap,
-  type LucideIcon,
-} from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { Handshake, HeartHandshake, Target, Zap, type LucideIcon } from 'lucide-react'
 import { WHY_CHOOSE } from '../lib/constants'
-import { fadeUpScale, staggerContainer, viewportOnce } from '../lib/motion'
 import { SectionHeader } from './ui/SectionHeader'
+import { DottedSectionBg } from './DottedSectionBg'
 
 const whyIcons: Record<string, LucideIcon> = {
   Zap,
@@ -18,48 +13,58 @@ const whyIcons: Record<string, LucideIcon> = {
 }
 
 export function WhyChoose() {
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const cards = gridRef.current?.querySelectorAll('.why-card')
+    if (!cards?.length) return
+
+    gsap.fromTo(
+      cards,
+      { opacity: 0, y: 28 },
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.08,
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: gridRef.current,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+      },
+    )
+  }, [])
+
   return (
-    <section className="relative py-20 sm:py-28">
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-24 sm:py-32 bg-surface">
+      <DottedSectionBg />
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
-          eyebrow="Why Digi Hooks"
+          eyebrow="Why DigiHooks"
           title="Why businesses choose us"
           description="We operate like a product team, obsessed with outcomes, speed, and clarity."
           align="center"
         />
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          variants={staggerContainer}
-          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6"
-        >
+        <div ref={gridRef} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
           {WHY_CHOOSE.map((item) => {
             const Icon = whyIcons[item.icon] ?? Zap
             return (
-              <motion.div
+              <div
                 key={item.title}
-                variants={fadeUpScale}
-                whileHover={{
-                  y: -8,
-                  transition: { type: 'spring', stiffness: 300, damping: 20 },
-                }}
-                className="glass group rounded-3xl p-6 transition hover:border-orange/25 sm:p-8"
+                className="why-card opacity-0 surface-card p-6 sm:p-8 transition-opacity duration-300 hover:opacity-90"
               >
-                <motion.div
-                  whileHover={{ scale: 1.15, rotate: 5 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-                  className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple/40 to-orange/30 text-orange"
-                >
-                  <Icon size={24} />
-                </motion.div>
-                <h3 className="font-display text-lg font-bold text-white">{item.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-white/60">{item.desc}</p>
-              </motion.div>
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-surface text-ink">
+                  <Icon size={22} />
+                </div>
+                <h3 className="font-medium text-lg text-ink">{item.title}</h3>
+                <p className="story-body mt-3 text-sm leading-relaxed">{item.desc}</p>
+              </div>
             )
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

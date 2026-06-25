@@ -3,6 +3,7 @@ import { Menu, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { NAV_LINKS } from '../lib/constants'
+import { LogoWordmark } from './LogoWordmark'
 import { Button } from './ui/Button'
 
 export function Navbar() {
@@ -10,80 +11,59 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
+    const onScroll = () => setScrolled(window.scrollY > 12)
     window.addEventListener('scroll', onScroll, { passive: true })
-
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
-
     return () => {
       document.body.style.overflow = ''
     }
   }, [open])
 
-  const linkClass = ({ isActive }: { isActive: boolean }) => {
-    return (
-      'rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-white/5 hover:text-white ' +
-      (isActive ? 'text-white bg-white/5' : 'text-white/70')
-    )
-  }
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-[250ms] ${
+      isActive ? 'text-ink' : 'text-secondary hover:text-ink'
+    }`
 
-  const mobileLinkClass = ({ isActive }: { isActive: boolean }) => {
-    return (
-      'block rounded-xl px-4 py-3 text-lg font-semibold transition-all duration-300 ' +
-      (isActive
-        ? 'text-white bg-white/10 border-l-4 border-[#F57C00]'
-        : 'text-white/80 hover:bg-white/5 hover:text-white')
-    )
-  }
+  const mobileLinkClass = ({ isActive }: { isActive: boolean }) =>
+    `block rounded-lg px-4 py-3 text-base font-medium transition-colors duration-[250ms] ${
+      isActive ? 'text-ink bg-surface' : 'text-secondary hover:text-ink hover:bg-surface/60'
+    }`
 
   return (
     <>
       <header
-        className={
-          'fixed inset-x-0 top-0 z-50 transition-all duration-300 ' +
-          (scrolled || open
-            ? 'bg-[#0B1023] border-b border-white/10 py-3'
-            : 'bg-transparent py-5')
-        }
+        className={`fixed inset-x-0 top-0 z-50 border-b transition-all duration-500 ${
+          scrolled || open
+            ? 'border-line bg-canvas/95 backdrop-blur-md'
+            : 'border-transparent bg-transparent'
+        }`}
       >
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <nav className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:px-8">
           <NavLink
             to="/"
-            className="group flex items-center gap-3"
+            end
+            className="flex items-center justify-self-start"
             onClick={() => setOpen(false)}
           >
-            <img
-              src="/logo.png"
-              alt="Digi Hooks"
-              className="h-10 w-10 rounded-full object-cover ring-1 ring-white/10 transition group-hover:ring-[#F57C00]/40 sm:h-11 sm:w-11"
-            />
-
-            <span className="hidden font-display text-lg font-bold tracking-tight sm:block">
-              <span className="text-[#34208E]">DIGI</span>
-              <span className="text-[#F57C00]"> HOOKS</span>
-            </span>
+            <LogoWordmark className="h-7 max-w-[7.25rem] sm:max-w-[9.5rem]" />
           </NavLink>
 
-          <ul className="hidden items-center gap-1 lg:flex">
+          <ul className="hidden items-center gap-1 justify-self-center lg:flex">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
-                <NavLink
-                  to={link.href}
-                  end={link.href === '/'}
-                  className={linkClass}
-                >
+                <NavLink to={link.href} end={link.href === '/'} className={linkClass}>
                   {link.label}
                 </NavLink>
               </li>
             ))}
           </ul>
 
-          <div className="hidden lg:block">
-            <Button to="/contact" variant="primary">
+          <div className="hidden items-center justify-self-end lg:flex">
+            <Button to="/contact" variant="primary" data-cursor="hover">
               Free Strategy Call
             </Button>
           </div>
@@ -91,43 +71,25 @@ export function Navbar() {
           <button
             type="button"
             aria-label={open ? 'Close menu' : 'Open menu'}
-            className="relative z-[1001] rounded-lg p-2 text-white hover:bg-white/10 lg:hidden"
-            onClick={() => setOpen((current) => !current)}
+            className="relative z-[1001] flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center justify-self-end rounded-lg text-ink hover:bg-surface lg:hidden"
+            onClick={() => setOpen((c) => !c)}
           >
-            {open ? <X size={26} /> : <Menu size={26} />}
+            {open ? <X size={24} /> : <Menu size={24} />}
           </button>
         </nav>
       </header>
 
       <AnimatePresence>
-        {open ? (
+        {open && (
           <motion.div
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
-            transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="fixed inset-0 z-[999] bg-[#0B1023] lg:hidden"
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            className="fixed inset-0 z-[999] bg-canvas lg:hidden"
           >
             <div className="flex h-full flex-col px-6 pb-8 pt-24">
-              <div className="mb-8 flex items-center gap-3 border-b border-white/10 pb-6">
-                <img
-                  src="/logo.png"
-                  alt="Digi Hooks"
-                  className="h-12 w-12 rounded-full object-cover"
-                />
-
-                <div>
-                  <h2 className="font-display text-xl font-bold">
-                    <span className="text-[#34208E]">DIGI</span>
-                    <span className="text-[#F57C00]"> HOOKS</span>
-                  </h2>
-
-                  <p className="text-sm text-white/60">
-                    Digital Growth Engine
-                  </p>
-                </div>
-              </div>
-
+              <LogoWordmark className="h-7 mb-9" />
               <ul className="flex flex-col gap-1">
                 {NAV_LINKS.map((link) => (
                   <li key={link.href}>
@@ -142,29 +104,14 @@ export function Navbar() {
                   </li>
                 ))}
               </ul>
-
               <div className="mt-auto pt-8">
-                <Button
-                  to="/contact"
-                  variant="primary"
-                  className="w-full"
-                  onClick={() => setOpen(false)}
-                >
+                <Button to="/contact" variant="primary" className="w-full" onClick={() => setOpen(false)}>
                   Free Strategy Call
                 </Button>
-
-                <a
-                  href="https://wa.me/917015218840"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 flex h-12 items-center justify-center rounded-xl border border-green-500/30 bg-green-500/10 font-medium text-green-400 transition hover:bg-green-500/20"
-                >
-                  Chat on WhatsApp
-                </a>
               </div>
             </div>
           </motion.div>
-        ) : null}
+        )}
       </AnimatePresence>
     </>
   )

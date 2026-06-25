@@ -1,60 +1,83 @@
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { INSIGHTS } from '../lib/constants'
-import { fadeUpScale, staggerContainer, viewportOnce } from '../lib/motion'
+import { prefersReducedMotion } from '../lib/motion/choreography'
+import { killScrollTriggersIn } from '../lib/scroll'
 import { SectionHeader } from './ui/SectionHeader'
+import { DottedSectionBg } from './DottedSectionBg'
 
 export function Insights() {
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const grid = gridRef.current
+    const cards = grid?.querySelectorAll('.insight-card')
+    if (!grid || !cards?.length) return
+
+    if (prefersReducedMotion()) {
+      gsap.set(cards, { opacity: 1, y: 0 })
+      return
+    }
+
+    const tween = gsap.fromTo(
+      cards,
+      { opacity: 0, y: 32 },
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.1,
+        duration: 0.7,
+        ease: 'power2.out',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: grid,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        },
+      },
+    )
+
+    return () => {
+      killScrollTriggersIn(grid)
+      tween.kill()
+    }
+  }, [])
+
   return (
-    <section className="relative py-20 sm:py-28">
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-24 sm:py-32 bg-surface">
+      <DottedSectionBg />
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <SectionHeader
           eyebrow="Insights"
-          title="Latest growth thinking"
-          description="Practical articles on websites, SEO, and digital marketing written for business owners, not developers."
+          title="Practical growth thinking"
+          description="Articles on websites, SEO, and marketing written for business owners who want results."
         />
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportOnce}
-          variants={staggerContainer}
-          className="grid gap-6 md:grid-cols-3"
-        >
+        <div ref={gridRef} className="grid gap-6 md:grid-cols-3">
           {INSIGHTS.map((post) => (
-            <motion.div
+            <Link
               key={post.title}
-              variants={fadeUpScale}
-              whileHover={{
-                y: -8,
-                transition: { type: 'spring', stiffness: 300, damping: 20 },
-              }}
+              to="/contact"
+              className="insight-card surface-card group flex flex-col p-6 sm:p-8 transition-opacity duration-300 hover:opacity-90"
+              data-cursor="hover"
             >
-              <Link
-                to="/contact"
-                className="glass group flex flex-col rounded-3xl p-6 transition hover:border-blue/30 sm:p-8"
-              >
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="rounded-full bg-purple/30 px-3 py-1 text-xs font-medium text-blue">
-                    {post.tag}
-                  </span>
-                  <span className="text-xs text-white/40">{post.date}</span>
-                </div>
-                <h3 className="font-display text-lg font-bold text-white transition group-hover:text-orange sm:text-xl">
-                  {post.title}
-                </h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-white/55">{post.excerpt}</p>
-                <span className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-blue group-hover:text-orange">
-                  Read article
-                  <motion.span whileHover={{ x: 4, y: -4 }}>
-                    <ArrowUpRight size={16} />
-                  </motion.span>
+              <div className="mb-4 flex items-center justify-between">
+                <span className="rounded-full bg-surface px-3 py-1 text-xs font-medium text-ink">
+                  {post.tag}
                 </span>
-              </Link>
-            </motion.div>
+                <span className="text-xs text-secondary">{post.date}</span>
+              </div>
+              <h3 className="font-semibold text-lg text-ink sm:text-xl leading-snug">{post.title}</h3>
+              <p className="story-body mt-3 flex-1 text-sm leading-relaxed">{post.excerpt}</p>
+              <span className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-ink group-hover:text-secondary transition-colors">
+                Read article
+                <ArrowUpRight size={16} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </span>
+            </Link>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

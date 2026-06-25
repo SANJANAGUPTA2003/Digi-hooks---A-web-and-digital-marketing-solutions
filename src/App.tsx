@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
 import { AboutPage } from './pages/AboutPage'
 import { ContactPage } from './pages/ContactPage'
@@ -17,6 +17,7 @@ function App() {
           <Route path="services" element={<ServicesPage />} />
           <Route path="process" element={<ProcessPage />} />
           <Route path="insights" element={<InsightsPage />} />
+          <Route path="testimonials" element={<Navigate to="/insights" replace />} />
           <Route path="contact" element={<ContactPage />} />
         </Route>
       </Routes>

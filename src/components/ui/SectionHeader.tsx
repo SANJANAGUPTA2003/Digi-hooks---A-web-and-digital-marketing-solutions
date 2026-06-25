@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion'
-import { fadeUp, staggerContainerFast, viewportOnce } from '../../lib/motion'
+import { useEffect, useRef } from 'react'
+import { revealOnScroll } from '../../lib/scroll'
 
 interface SectionHeaderProps {
   eyebrow: string
@@ -14,37 +14,38 @@ export function SectionHeader({
   description,
   align = 'left',
 }: SectionHeaderProps) {
+  const ref = useRef<HTMLDivElement>(null)
   const alignClass = align === 'center' ? 'text-center mx-auto' : 'text-left'
   const maxW = align === 'center' ? 'max-w-2xl' : 'max-w-xl'
 
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const tween = revealOnScroll(
+      el.children,
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, stagger: 0.08, duration: 0.7, ease: 'power2.out' },
+      {
+        trigger: el,
+        start: 'top 88%',
+        toggleActions: 'play none none none',
+      },
+    )
+
+    return () => {
+      tween.scrollTrigger?.kill()
+      tween.kill()
+    }
+  }, [])
+
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={viewportOnce}
-      variants={staggerContainerFast}
-      className={`mb-12 md:mb-16 ${alignClass} ${maxW}`}
-    >
-      <motion.span
-        variants={fadeUp}
-        className="mb-3 inline-block font-display text-xs font-semibold uppercase tracking-[0.2em] text-orange"
-      >
-        {eyebrow}
-      </motion.span>
-      <motion.h2
-        variants={fadeUp}
-        className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-tight"
-      >
-        {title}
-      </motion.h2>
+    <div ref={ref} className={`mb-12 md:mb-16 ${alignClass} ${maxW}`}>
+      <span className="story-label">{eyebrow}</span>
+      <h2 className="story-headline mt-4 text-3xl sm:text-4xl lg:text-[2.5rem] text-ink">{title}</h2>
       {description && (
-        <motion.p
-          variants={fadeUp}
-          className="mt-4 text-base leading-relaxed text-white/60 sm:text-lg"
-        >
-          {description}
-        </motion.p>
+        <p className="story-body mt-4 text-base sm:text-lg max-w-prose">{description}</p>
       )}
-    </motion.div>
+    </div>
   )
 }
