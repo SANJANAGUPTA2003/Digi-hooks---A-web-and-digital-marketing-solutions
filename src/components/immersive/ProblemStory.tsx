@@ -60,6 +60,10 @@ export function ProblemStory() {
       }
     }
 
+    const rootStyle = getComputedStyle(document.documentElement)
+    const surfaceColor = rootStyle.getPropertyValue('--color-surface').trim()
+    const lineColor = rootStyle.getPropertyValue('--color-line').trim()
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
@@ -87,7 +91,7 @@ export function ProblemStory() {
         { scale: 1, opacity: 1, stagger: 0.05, ease: 'power2.out', duration: 0.14 },
         0.42,
       )
-      .to(fragments, { backgroundColor: '#ECE7DF', borderColor: '#D9D2C8', duration: 0.14 }, 0.5)
+      .to(fragments, { backgroundColor: surfaceColor, borderColor: lineColor, duration: 0.14 }, 0.5)
       .to(group, { scale: 1.06, ease: 'power2.out', duration: 0.22 }, 0.54)
       .to(hub, { scale: 1.08, ease: 'power2.out', duration: 0.18 }, 0.54)
       .to({}, { duration: 0.65 }, 0.56)

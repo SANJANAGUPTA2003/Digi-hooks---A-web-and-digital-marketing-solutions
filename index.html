@@ -28,6 +28,17 @@
       rel="stylesheet"
     />
     <title>DIGI HOOKS - HOOK GROW ENGAGE</title>
+    <script>
+      (function () {
+        var stored = localStorage.getItem('digihooks-theme')
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        var theme = stored === 'light' || stored === 'dark' ? stored : prefersDark ? 'dark' : 'light'
+        document.documentElement.classList.toggle('dark', theme === 'dark')
+        document.documentElement.style.colorScheme = theme
+        var meta = document.querySelector('meta[name="theme-color"]')
+        if (meta) meta.setAttribute('content', theme === 'dark' ? '#141312' : '#F5F3EF')
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

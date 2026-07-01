@@ -199,7 +199,7 @@ export function ServiceScrollExperience({ showSupporting = true }: ServiceScroll
                     to="/contact"
                     className="service-card group flex flex-col p-6 sm:p-7"
                   >
-                    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-surface transition-colors group-hover:bg-ink group-hover:text-white">
+                    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-surface transition-colors group-hover:bg-ink group-hover:text-canvas">
                       <Icon size={20} />
                     </div>
                     <h3 className="text-lg font-semibold text-ink">{service.title}</h3>

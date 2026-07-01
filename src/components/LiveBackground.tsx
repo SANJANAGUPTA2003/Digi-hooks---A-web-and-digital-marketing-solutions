@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTheme } from '../context/ThemeContext'
 import { isMobile, prefersReducedMotion } from '../lib/motion/choreography'
 
 type LiveBackgroundVariant = 'global' | 'hero' | 'network' | 'soft'
@@ -17,8 +18,8 @@ interface Node {
   phase: number
 }
 
-/** Brand secondary #5F5C59 */
-const NODE_RGB = '95, 92, 89'
+/** Light: brand #5F5C59 · Dark: soft warm gray nodes */
+const NODE_RGB = { light: '95, 92, 89', dark: '168, 162, 158' } as const
 
 type VariantConfig = {
   nodes: number
@@ -51,6 +52,7 @@ function getVariantConfig(variant: LiveBackgroundVariant): VariantConfig {
 
 export function LiveBackground({ variant = 'global', className = '' }: LiveBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { theme } = useTheme()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -59,6 +61,7 @@ export function LiveBackground({ variant = 'global', className = '' }: LiveBackg
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    const nodeRgb = NODE_RGB[theme]
     const config = getVariantConfig(variant)
     let nodes: Node[] = []
     let raf = 0
@@ -125,7 +128,7 @@ export function LiveBackground({ variant = 'global', className = '' }: LiveBackg
 
           if (dist < config.linkDistance) {
             const fade = 1 - dist / config.linkDistance
-            ctx.strokeStyle = `rgba(${NODE_RGB}, ${config.lineOpacity * fade})`
+            ctx.strokeStyle = `rgba(${nodeRgb}, ${config.lineOpacity * fade})`
             ctx.lineWidth = 0.75
             ctx.beginPath()
             ctx.moveTo(a.x, a.y)
@@ -138,7 +141,7 @@ export function LiveBackground({ variant = 'global', className = '' }: LiveBackg
       }
 
       nodes.forEach((node) => {
-        ctx.fillStyle = `rgba(${NODE_RGB}, ${config.nodeOpacity})`
+        ctx.fillStyle = `rgba(${nodeRgb}, ${config.nodeOpacity})`
         ctx.beginPath()
         ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2)
         ctx.fill()
@@ -153,7 +156,7 @@ export function LiveBackground({ variant = 'global', className = '' }: LiveBackg
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', resize)
     }
-  }, [variant])
+  }, [variant, theme])
 
   if (prefersReducedMotion()) return null
 

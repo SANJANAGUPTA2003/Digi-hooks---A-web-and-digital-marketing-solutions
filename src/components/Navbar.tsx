@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom'
 import { NAV_LINKS } from '../lib/constants'
 import { LogoWordmark } from './LogoWordmark'
 import { Button } from './ui/Button'
+import { ThemeToggle } from './ThemeToggle'
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
@@ -62,20 +63,22 @@ export function Navbar() {
             ))}
           </ul>
 
-          <div className="hidden items-center justify-self-end lg:flex">
-            <Button to="/contact" variant="primary" data-cursor="hover">
-              Free Strategy Call
-            </Button>
+          <div className="flex items-center gap-2 justify-self-end sm:gap-3">
+            <ThemeToggle />
+            <div className="hidden lg:block">
+              <Button to="/contact" variant="primary" data-cursor="hover">
+                Free Strategy Call
+              </Button>
+            </div>
+            <button
+              type="button"
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              className="relative z-[1001] flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-ink hover:bg-surface lg:hidden"
+              onClick={() => setOpen((c) => !c)}
+            >
+              {open ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
-
-          <button
-            type="button"
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            className="relative z-[1001] flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center justify-self-end rounded-lg text-ink hover:bg-surface lg:hidden"
-            onClick={() => setOpen((c) => !c)}
-          >
-            {open ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </nav>
       </header>
 
@@ -104,7 +107,8 @@ export function Navbar() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-auto pt-8">
+              <div className="mt-auto space-y-4 pt-8">
+                <ThemeToggle showLabel className="w-full px-4 py-3" />
                 <Button to="/contact" variant="primary" className="w-full" onClick={() => setOpen(false)}>
                   Free Strategy Call
                 </Button>

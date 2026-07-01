@@ -21,7 +21,7 @@ export function Layout() {
   }, [])
 
   return (
-    <div className="relative min-h-screen bg-canvas text-ink antialiased">
+    <div className="relative min-h-screen bg-canvas text-ink antialiased transition-colors duration-300">
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <LiveBackground variant="global" />
         <div className="section-grid-bg absolute inset-0 opacity-50" aria-hidden />

@@ -8,7 +8,7 @@ export function LogoWordmark({ className = '' }: LogoWordmarkProps) {
       <img
         src="/logo.svg"
         alt="DigiHooks"
-        className="block h-full w-auto max-w-full object-contain object-left"
+        className="block h-full w-auto max-w-full object-contain object-left dark:brightness-0 dark:invert"
         draggable={false}
       />
     </span>

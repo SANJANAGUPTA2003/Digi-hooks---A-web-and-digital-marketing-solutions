@@ -16,12 +16,12 @@ interface ButtonProps {
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-ink text-white border border-ink hover:bg-hover hover:text-white hover:border-hover hover:shadow-[0_8px_24px_rgb(27_27_27_/_18%)]',
+    'bg-ink text-canvas border border-ink hover:bg-hover hover:text-canvas hover:border-hover hover:shadow-[0_8px_24px_rgb(27_27_27_/_18%)] dark:hover:shadow-[0_8px_24px_rgb(0_0_0_/_35%)]',
   secondary:
-    'bg-transparent text-ink border border-line hover:bg-ink hover:text-white hover:border-ink',
+    'bg-transparent text-ink border border-line hover:bg-ink hover:text-canvas hover:border-ink',
   ghost: 'text-secondary hover:text-ink border border-transparent',
   whatsapp:
-    'bg-ink text-white border border-ink hover:bg-hover hover:text-white hover:border-hover hover:shadow-[0_8px_24px_rgb(27_27_27_/_18%)]',
+    'bg-ink text-canvas border border-ink hover:bg-hover hover:text-canvas hover:border-hover hover:shadow-[0_8px_24px_rgb(27_27_27_/_18%)] dark:hover:shadow-[0_8px_24px_rgb(0_0_0_/_35%)]',
 }
 
 export function Button({

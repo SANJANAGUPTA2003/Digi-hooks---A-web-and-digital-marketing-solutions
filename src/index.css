@@ -18,9 +18,29 @@
   --font-body: 'Inter', system-ui, sans-serif;
 }
 
+.dark {
+  --color-canvas: #141312;
+  --color-surface: #1c1b19;
+  --color-card: #252422;
+  --color-ink: #f5f3ef;
+  --color-secondary: #a8a29e;
+  --color-line: #3d3a36;
+  --color-hover: #e8e6e2;
+  --color-accent: #f5f3ef;
+
+  --color-cream: #141312;
+  --color-border: #3d3a36;
+  --color-accent-soft: #1c1b19;
+}
+
 html {
   background: var(--color-canvas);
   scroll-behavior: auto;
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 html.lenis,
@@ -59,6 +79,11 @@ body::before {
   color: var(--color-ink);
 }
 
+.dark ::selection {
+  background: rgb(95 92 89 / 45%);
+  color: var(--color-ink);
+}
+
 .story-headline {
   font-family: var(--font-display);
   font-weight: 700;
@@ -89,6 +114,10 @@ body::before {
   box-shadow: 0 1px 2px rgb(27 27 27 / 4%);
 }
 
+.dark .surface-card {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+}
+
 .surface-muted {
   background: var(--color-surface);
   border: 1px solid var(--color-line);
@@ -102,12 +131,22 @@ body::before {
   box-shadow: 0 8px 30px rgb(27 27 27 / 6%);
 }
 
+.dark .surface-elevated {
+  box-shadow: 0 8px 30px rgb(0 0 0 / 28%);
+}
+
 .section-grid-bg {
   background-image:
     linear-gradient(rgb(95 92 89 / 7%) 1px, transparent 1px),
     linear-gradient(90deg, rgb(95 92 89 / 7%) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+.dark .section-grid-bg {
+  background-image:
+    linear-gradient(rgb(168 162 158 / 8%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(168 162 158 / 8%) 1px, transparent 1px);
 }
 
 @media (max-width: 767px) {
@@ -141,6 +180,11 @@ body::before {
   box-shadow: 0 12px 32px rgb(27 27 27 / 8%);
 }
 
+.dark .service-card:hover {
+  border-color: rgb(168 162 158 / 22%);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 32%);
+}
+
 body.custom-cursor-active {
   cursor: none;
 }
@@ -162,6 +206,10 @@ body.custom-cursor-active button {
   height: 32px;
   border-radius: 50%;
   border: 1px solid rgb(27 27 27 / 15%);
+}
+
+.dark .custom-cursor-ring {
+  border-color: rgb(245 243 239 / 18%);
 }
 
 @media (pointer: coarse), (prefers-reduced-motion: reduce) {
